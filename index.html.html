@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="pl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skrzynia Śniącego — Zamek Bębenkowy</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Grenze+Gotisch:wght@400;600;800&family=IM+Fell+English:ital@0;1&family=IM+Fell+English+SC&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#0c0a06;
+    --stone:#161109;
+    --stone2:#1d1710;
+    --slab:#211a10;
+    --slab2:#2a2114;
+    --bronze:#b78a3e;
+    --bronze-hi:#e3bd6e;
+    --bronze-dim:#7c5e2c;
+    --iron:#4a3f2c;
+    --parch:#cdb98c;
+    --ink:#e7d6ac;
+    --ink-dim:#b09a6e;
+    --muted:#7c6a47;
+    --magic:#8fd070;       /* poświata ogniska skupienia — zapadka na miejscu */
+    --magic-glow:rgba(143,208,112,.55);
+    --blood:#c33321;       /* krew Śniącego — błąd / poza zakresem */
+    --blood-deep:#5e1610;
+    --ember:#e0563a;       /* żar — akcent Śniącego */
+    --rust:#cf6336;        /* obrót w prawo */
+    --gold:#dab15a;        /* obrót w lewo */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0}
+  body{
+    background:
+      radial-gradient(950px 540px at 50% -12%, rgba(200,52,33,.20), transparent 62%),
+      radial-gradient(900px 520px at 12% -8%, rgba(193,90,40,.12), transparent 60%),
+      radial-gradient(900px 520px at 88% -6%, rgba(193,90,40,.12), transparent 60%),
+      radial-gradient(1100px 800px at 50% 120%, rgba(120,30,20,.22), transparent 60%),
+      linear-gradient(180deg,#100805,#0a0604 80%);
+    color:var(--ink);
+    font-family:"IM Fell English",Georgia,serif;
+    font-size:15.5px;line-height:1.55;
+    min-height:100vh;padding:30px 16px 70px;
+    position:relative;
+  }
+  /* ziarno / kamień */
+  body::before{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;opacity:.10;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+  /* winieta */
+  body::after{
+    content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+    box-shadow:inset 0 0 220px 60px rgba(0,0,0,.85);
+  }
+  .wrap{max-width:1000px;margin:0 auto;position:relative;z-index:1}
+
+  /* ---- układ ---- */
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+  @media(max-width:780px){.grid{grid-template-columns:1fr}}
+
+  /* ---- kamienna tablica ---- */
+  .panel{
+    position:relative;border-radius:6px;padding:20px 20px 22px;
+    background:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='s'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.6' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23s)' opacity='0.06'/%3E%3C/svg%3E"),
+      linear-gradient(160deg,var(--slab2),var(--stone) 90%);
+    border:1px solid #000;
+    box-shadow:0 0 0 2px #1a140c, 0 0 0 3px var(--bronze-dim), inset 0 1px 0 rgba(227,189,110,.08), inset 0 -28px 50px rgba(0,0,0,.5), 0 14px 30px rgba(0,0,0,.5);
+  }
+  /* kute narożniki */
+  .panel .corner{position:absolute;width:14px;height:14px;border:2px solid var(--bronze);opacity:.7}
+  .panel .corner.tl{top:6px;left:6px;border-right:0;border-bottom:0}
+  .panel .corner.tr{top:6px;right:6px;border-left:0;border-bottom:0}
+  .panel .corner.bl{bottom:6px;left:6px;border-right:0;border-top:0}
+  .panel .corner.br{bottom:6px;right:6px;border-left:0;border-top:0}
+
+  .panel h2{font-family:"Grenze Gotisch",serif;font-weight:800;font-size:21px;letter-spacing:.02em;color:var(--bronze);
+    margin:0 0 16px;display:flex;align-items:center;gap:10px;text-shadow:0 1px 0 #000}
+  .panel h2 .rune{font-family:"Grenze Gotisch";background:radial-gradient(circle at 35% 30%,var(--bronze-hi),var(--bronze) 55%,var(--bronze-dim));
+    color:#1a130a;width:26px;height:26px;border-radius:5px;display:grid;place-items:center;font-size:15px;font-weight:800;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.4),inset 0 -2px 3px rgba(0,0,0,.4),0 1px 2px #000}
+
+  /* tabela zapadek */
+  table{width:100%;border-collapse:collapse}
+  th{font-family:"IM Fell English SC";font-weight:400;color:var(--muted);font-size:12px;letter-spacing:.08em;text-transform:uppercase;
+     text-align:center;padding:5px 6px;border-bottom:1px solid var(--iron)}
+  td{text-align:center;padding:7px 6px;border-bottom:1px solid #211a10}
+  td.lab{text-align:left;color:var(--ink);font-style:italic}
+  input[type=number]{
+    width:54px;background:#0d0a06;border:1px solid #000;color:var(--bronze-hi);
+    font-family:"IM Fell English";font-size:17px;text-align:center;padding:5px 4px;border-radius:5px;
+    box-shadow:inset 0 2px 5px rgba(0,0,0,.7),0 1px 0 rgba(227,189,110,.06);
+  }
+  input[type=number]:focus{outline:none;border-color:var(--bronze);box-shadow:inset 0 2px 5px rgba(0,0,0,.7),0 0 0 2px rgba(183,138,62,.35)}
+
+  .row{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:14px}
+  label.fld{display:flex;align-items:center;gap:8px;color:var(--ink-dim);font-style:italic}
+
+  /* sprzężenia */
+  .cpl-src{border:1px solid #000;border-radius:5px;padding:11px;margin-bottom:11px;
+    background:linear-gradient(160deg,#1c160d,#14100a);box-shadow:inset 0 1px 0 rgba(227,189,110,.05)}
+  .cpl-src>.hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+  .cpl-src>.hd b{font-family:"Grenze Gotisch";font-weight:600;font-size:17px;color:var(--bronze-hi)}
+  .eff{display:flex;align-items:center;gap:9px;margin:7px 0;color:var(--ink-dim);flex-wrap:wrap}
+  select{background:#0d0a06;border:1px solid #000;color:var(--ink);font-family:"IM Fell English";font-size:15px;padding:5px 7px;border-radius:5px;
+    box-shadow:inset 0 2px 4px rgba(0,0,0,.6)}
+  select:focus{outline:none;border-color:var(--bronze)}
+  .seg{display:inline-flex;border:1px solid #000;border-radius:5px;overflow:hidden;box-shadow:0 1px 2px rgba(0,0,0,.5)}
+  .seg button{background:#15100a;border:0;color:var(--muted);font-family:"IM Fell English SC";font-size:12px;letter-spacing:.04em;padding:5px 11px;cursor:pointer}
+  .seg button.on{background:linear-gradient(180deg,var(--bronze),var(--bronze-dim));color:#160f07;text-shadow:0 1px 0 rgba(255,255,255,.25)}
+
+  .x{background:#15100a;border:1px solid #000;color:var(--blood);width:26px;height:26px;border-radius:5px;cursor:pointer;font-size:15px;line-height:1;font-family:"IM Fell English"}
+  .x:hover{background:#2a140f}
+  .add{background:transparent;border:1px solid var(--bronze-dim);color:var(--bronze);font-family:"IM Fell English SC";letter-spacing:.05em;font-size:12.5px;padding:5px 12px;border-radius:5px;cursor:pointer}
+  .add:hover{background:rgba(183,138,62,.12);border-color:var(--bronze)}
+
+  /* przyciski akcji */
+  .actions{display:flex;gap:16px;flex-wrap:wrap;margin:28px 0 6px;align-items:center;justify-content:center}
+  .btn{font-family:"Grenze Gotisch",serif;font-weight:800;letter-spacing:.04em;font-size:21px;padding:13px 34px;border-radius:6px;cursor:pointer;
+    border:1px solid #000;text-shadow:0 1px 0 rgba(0,0,0,.4)}
+  .btn.go{background:linear-gradient(180deg,#e6a24e,#b85a2c 45%,#7a2417);color:#1a0d08;
+    box-shadow:0 0 0 1px #f0b873 inset,0 0 24px rgba(200,52,33,.5),0 4px 10px rgba(0,0,0,.6)}
+  .btn.go:hover{filter:brightness(1.08);box-shadow:0 0 0 1px #f0b873 inset,0 0 36px rgba(224,86,58,.75),0 4px 10px rgba(0,0,0,.6)}
+  .btn.ghost{background:linear-gradient(180deg,#241c11,#16110a);color:var(--ink-dim);box-shadow:inset 0 1px 0 rgba(227,189,110,.08)}
+  .btn.ghost:hover{color:var(--ink);border-color:var(--bronze-dim)}
+  .btn.warn{background:linear-gradient(180deg,#d65a44,#8f2418);color:#1c0d08;
+    box-shadow:0 0 0 1px rgba(240,170,140,.5) inset,0 0 20px rgba(200,52,33,.5),0 4px 10px rgba(0,0,0,.6)}
+  .btn.warn:hover{filter:brightness(1.08)}
+  .confirm{display:flex;gap:14px;flex-wrap:wrap;align-items:center;justify-content:center;margin:16px 0 0}
+  .confirm[hidden]{display:none}
+  .confirm .ask{color:var(--ember);font-style:italic;font-size:15px;width:100%;text-align:center}
+  .confirm .ask b{color:var(--blood);font-style:normal}
+
+  .legend{text-align:center;color:var(--muted);font-style:italic;font-size:13.5px;margin:12px 0 0}
+  .legend b{color:var(--gold);font-style:normal}
+  .legend i{color:var(--rust);font-style:normal}
+
+  /* wyniki */
+  #out{margin-top:28px}
+  .status{font-family:"IM Fell English SC";letter-spacing:.04em;font-size:15px;color:var(--ink-dim);margin-bottom:16px;text-align:center}
+  .status.err{color:var(--blood)}
+  .status.ok{color:var(--magic);text-shadow:0 0 14px var(--magic-glow)}
+  .status b{color:var(--bronze-hi)}
+
+  .seq{background:linear-gradient(160deg,#15100a,#0f0b06);border:1px solid #000;box-shadow:inset 0 2px 8px rgba(0,0,0,.6);
+    border-radius:6px;padding:16px;line-height:2.3;margin-bottom:20px}
+  .mv{display:inline-block;padding:3px 10px;border-radius:5px;margin:3px;border:1px solid var(--iron);background:#1a150d;font-size:16px}
+  .mv .p{color:var(--gold);font-weight:700} .mv .m{color:var(--rust);font-weight:700}
+  .mv b{color:var(--ink);font-family:"Grenze Gotisch";font-size:18px}
+
+  .steps{width:100%;border-collapse:collapse;font-size:15px}
+  .steps th{padding:9px 5px}
+  .steps td{padding:8px 5px;border-bottom:1px solid #211a10}
+  .steps .cell{display:inline-block;min-width:24px;padding:2px 7px;border-radius:5px;color:var(--ink-dim)}
+  .steps .changed{background:linear-gradient(180deg,rgba(183,138,62,.28),rgba(183,138,62,.12));color:var(--bronze-hi);font-weight:700;box-shadow:inset 0 0 0 1px var(--bronze-dim)}
+  .steps .target{color:var(--magic);box-shadow:inset 0 0 0 1px var(--magic);text-shadow:0 0 10px var(--magic-glow)}
+  .mvtag{font-family:"Grenze Gotisch";font-weight:700;font-size:18px}
+  .mvtag.p{color:var(--gold)} .mvtag.m{color:var(--rust)}
+  .steps td b{font-family:"Grenze Gotisch";color:var(--ink)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="grid">
+    <div class="panel">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <h2><span class="rune">I</span> Bębenki zamka</h2>
+      <div class="row">
+        <label class="fld">Liczba bębenków
+          <input type="number" id="count" min="2" max="10" value="6">
+        </label>
+        <label class="fld">Min <input type="number" id="min" value="1"></label>
+        <label class="fld">Max <input type="number" id="max" value="7"></label>
+      </div>
+      <table id="latchTable">
+        <thead><tr><th>Bębenek</th><th>Położenie</th><th>Właściwe</th></tr></thead>
+        <tbody id="latchBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <h2><span class="rune">II</span> Sprzężenia bębenków</h2>
+      <div id="couplings"></div>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button class="btn go" id="solveBtn">Otwórz Skrzynię</button>
+    <button class="btn ghost" id="exampleBtn">Wczytaj przykład</button>
+    <button class="btn ghost" id="resetBtn">Wyczyść</button>
+  </div>
+  <div class="confirm" id="confirm" hidden>
+    <div class="ask">Wyczyścić <b>całą skrzynię</b> do zera? Wszystkie bębenki i sprzężenia przepadną.</div>
+    <button class="btn warn" id="confirmYes">Tak, wyczyść</button>
+    <button class="btn ghost" id="confirmNo">Anuluj</button>
+  </div>
+  <div class="legend">Ruch <b>+</b> = w lewo (+1) &nbsp;·&nbsp; <i>−</i> = w prawo (−1). Ruch bębenka porusza także bębenki sprzężone; żaden nie może wyjść poza zakres.</div>
+
+  <div id="out"></div>
+</div>
+
+<script>
+/* ---------- domyślna konfiguracja (zagadka) ---------- */
+function puzzleDefaults(){
+  return {
+    n:6, min:1, max:7,
+    starts:[6,7,1,3,4,4],
+    targets:[4,4,4,4,4,4],
+    couplings:[
+      [{t:3,mode:'mirror'}],
+      [{t:2,mode:'same'},{t:3,mode:'mirror'},{t:4,mode:'same'}],
+      [{t:3,mode:'same'},{t:4,mode:'mirror'}],
+      [],
+      [{t:1,mode:'same'}],
+      []
+    ]
+  };
+}
+let cfg = puzzleDefaults();
+
+/* ---------- render konfiguracji ---------- */
+function renderLatches(){
+  const tb=document.getElementById('latchBody');
+  tb.innerHTML='';
+  for(let i=0;i<cfg.n;i++){
+    const tr=document.createElement('tr');
+    tr.innerHTML=`<td class="lab">Bębenek ${i+1}</td>
+      <td><input type="number" data-k="start" data-i="${i}" value="${cfg.starts[i]}"></td>
+      <td><input type="number" data-k="target" data-i="${i}" value="${cfg.targets[i]}"></td>`;
+    tb.appendChild(tr);
+  }
+}
+function renderCouplings(){
+  const box=document.getElementById('couplings');
+  box.innerHTML='';
+  for(let i=0;i<cfg.n;i++){
+    const src=document.createElement('div');
+    src.className='cpl-src';
+    let html=`<div class="hd"><b>Obrót bębenka ${i+1}</b> <button class="add" data-add="${i}">+ efekt</button></div>`;
+    if(cfg.couplings[i].length===0){
+      html+=`<div class="eff" style="color:var(--muted);font-style:italic">porusza tylko tym bębenkiem</div>`;
+    }
+    cfg.couplings[i].forEach((e,j)=>{
+      html+=`<div class="eff">&rsaquo; bębenek
+        <select data-csrc="${i}" data-cj="${j}" data-kind="t">${latchOptions(e.t,i)}</select>
+        <span class="seg">
+          <button data-csrc="${i}" data-cj="${j}" data-mode="same" class="${e.mode==='same'?'on':''}">ten sam kierunek</button>
+          <button data-csrc="${i}" data-cj="${j}" data-mode="mirror" class="${e.mode==='mirror'?'on':''}">odwrotny</button>
+        </span>
+        <button class="x" data-del="${i}" data-delj="${j}">×</button>
+      </div>`;
+    });
+    src.innerHTML=html;
+    box.appendChild(src);
+  }
+}
+function latchOptions(sel,exclude){
+  let o='';
+  for(let k=0;k<cfg.n;k++){
+    if(k===exclude) continue;
+    o+=`<option value="${k}" ${k===sel?'selected':''}>${k+1}</option>`;
+  }
+  return o;
+}
+/* Odczyt CAŁEJ konfiguracji wprost z DOM — eliminuje rozjazd między
+   tym, co widać w formularzu, a tym, co liczy solver. */
+function readConfigFromDOM(){
+  cfg.n   = parseInt(document.getElementById('count').value);
+  cfg.min = parseInt(document.getElementById('min').value);
+  cfg.max = parseInt(document.getElementById('max').value);
+
+  const starts=[], targets=[];
+  document.querySelectorAll('#latchBody input[data-k="start"]').forEach(inp=>{ starts[+inp.dataset.i]=parseInt(inp.value); });
+  document.querySelectorAll('#latchBody input[data-k="target"]').forEach(inp=>{ targets[+inp.dataset.i]=parseInt(inp.value); });
+  cfg.starts=starts; cfg.targets=targets;
+
+  const couplings=Array.from({length:cfg.n},()=>[]);
+  document.querySelectorAll('#couplings .eff').forEach(eff=>{
+    const sel=eff.querySelector('select[data-kind="t"]');
+    if(!sel) return; // wiersz "porusza tylko tą zapadką"
+    const src=+sel.dataset.csrc;
+    const t=+sel.value;
+    const on=eff.querySelector('.seg button.on');
+    const mode=on?on.dataset.mode:'same';
+    if(src>=0 && src<cfg.n && t>=0 && t<cfg.n && t!==src) couplings[src].push({t,mode});
+  });
+  cfg.couplings=couplings;
+}
+
+/* ---------- zdarzenia ---------- */
+document.getElementById('count').addEventListener('change',e=>{
+  let n=Math.max(2,Math.min(10,parseInt(e.target.value)||6));
+  e.target.value=n;
+  const seed=Number.isFinite(cfg.min)?cfg.min:1;
+  while(cfg.starts.length<n){cfg.starts.push(seed);cfg.targets.push(seed);cfg.couplings.push([]);}
+  cfg.starts.length=n;cfg.targets.length=n;cfg.couplings.length=n;
+  cfg.couplings=cfg.couplings.map((lst,i)=>lst.filter(e2=>e2.t<n && e2.t!==i));
+  cfg.n=n;renderLatches();renderCouplings();
+});
+document.getElementById('latchBody').addEventListener('input',e=>{
+  const i=+e.target.dataset.i, k=e.target.dataset.k;
+  if(k==='start') cfg.starts[i]=parseInt(e.target.value);
+  if(k==='target') cfg.targets[i]=parseInt(e.target.value);
+});
+document.getElementById('couplings').addEventListener('click',e=>{
+  const t=e.target;
+  if(t.dataset.add!==undefined){
+    const i=+t.dataset.add; let cand=0; while(cand===i) cand++;
+    cfg.couplings[i].push({t:cand,mode:'same'}); renderCouplings(); return;
+  }
+  if(t.dataset.del!==undefined){ cfg.couplings[+t.dataset.del].splice(+t.dataset.delj,1); renderCouplings(); return; }
+  if(t.dataset.mode){ cfg.couplings[+t.dataset.csrc][+t.dataset.cj].mode=t.dataset.mode; renderCouplings(); return; }
+});
+document.getElementById('couplings').addEventListener('change',e=>{
+  const t=e.target;
+  if(t.dataset.kind==='t') cfg.couplings[+t.dataset.csrc][+t.dataset.cj].t=+t.value;
+});
+function zeroDefaults(){
+  const n=6;
+  return {n, min:0, max:7,
+    starts:Array(n).fill(0), targets:Array(n).fill(0),
+    couplings:Array.from({length:n},()=>[])};
+}
+function applyConfig(c){
+  cfg=c;
+  document.getElementById('count').value=cfg.n;
+  document.getElementById('min').value=cfg.min;
+  document.getElementById('max').value=cfg.max;
+  renderLatches();renderCouplings();
+  document.getElementById('out').innerHTML='';
+}
+document.getElementById('exampleBtn').addEventListener('click',()=>{
+  hideConfirm();
+  applyConfig(puzzleDefaults());
+});
+document.getElementById('resetBtn').addEventListener('click',()=>{
+  document.getElementById('confirm').hidden=false;
+  document.getElementById('confirm').scrollIntoView({behavior:'smooth',block:'nearest'});
+});
+document.getElementById('confirmNo').addEventListener('click',hideConfirm);
+document.getElementById('confirmYes').addEventListener('click',()=>{
+  hideConfirm();
+  applyConfig(zeroDefaults());
+});
+function hideConfirm(){ document.getElementById('confirm').hidden=true; }
+document.getElementById('solveBtn').addEventListener('click',solve);
+
+/* ---------- solver: BFS ---------- */
+function applyMove(state,i,dir){
+  const s=state.slice(); s[i]+=dir;
+  for(const e of cfg.couplings[i]) s[e.t]+= (e.mode==='same'? dir : -dir);
+  return s;
+}
+function inBounds(s){ for(const v of s) if(v<cfg.min||v>cfg.max) return false; return true; }
+
+function solve(){
+  readConfigFromDOM();
+  const out=document.getElementById('out');
+  for(let i=0;i<cfg.n;i++){
+    if(!Number.isFinite(cfg.starts[i])||!Number.isFinite(cfg.targets[i])){
+      out.innerHTML=`<div class="status err">Uzupełnij wszystkie pola Położenie/Właściwe.</div>`; return;
+    }
+    if(cfg.starts[i]<cfg.min||cfg.starts[i]>cfg.max||cfg.targets[i]<cfg.min||cfg.targets[i]>cfg.max){
+      out.innerHTML=`<div class="status err">Wartości muszą mieścić się w zakresie ${cfg.min}–${cfg.max}.</div>`; return;
+    }
+  }
+  if(cfg.max-cfg.min<1){out.innerHTML=`<div class="status err">Max musi być większe od Min.</div>`;return;}
+
+  const start=cfg.starts.slice(), target=cfg.targets.slice();
+  const startKey=start.join(','), targetKey=target.join(',');
+  if(startKey===targetKey){ out.innerHTML=`<div class="status ok">Skrzynia już otwarta — 0 ruchów.</div>`; return; }
+
+  const LIMIT=2500000;
+  const prev=new Map(); prev.set(startKey,null);
+  let queue=[start], found=false, visited=1;
+  const t0=performance.now();
+  outer:
+  while(queue.length){
+    const next=[];
+    for(const st of queue){
+      const sk=st.join(',');
+      for(let i=0;i<cfg.n;i++) for(const dir of [1,-1]){
+        const ns=applyMove(st,i,dir);
+        if(!inBounds(ns)) continue;
+        const nk=ns.join(',');
+        if(prev.has(nk)) continue;
+        prev.set(nk,{pk:sk,latch:i,dir}); visited++;
+        if(nk===targetKey){found=true;break outer;}
+        if(visited>LIMIT){break outer;}
+        next.push(ns);
+      }
+    }
+    queue=next;
+  }
+  if(!found){
+    out.innerHTML=`<div class="status err">Tej skrzyni nie da się otworzyć ${visited>LIMIT?'(przeszukano limit '+LIMIT.toLocaleString('pl')+' stanów)':'w obrębie zakresu — sprawdź sprzężenia i właściwe położenia.'}</div>`;
+    return;
+  }
+  const path=[]; let k=targetKey;
+  while(prev.get(k)){const p=prev.get(k);path.push({latch:p.latch,dir:p.dir});k=p.pk;}
+  path.reverse();
+  renderSolution(path,start,target,performance.now()-t0,visited);
+}
+
+function renderSolution(path,start,target,ms,visited){
+  const out=document.getElementById('out');
+  const sym=d=>d>0?'+':'−';
+  const cls=d=>d>0?'p':'m';
+  let seq='';
+  path.forEach(m=>{ seq+=`<span class="mv"><b>${m.latch+1}</b> <span class="${cls(m.dir)}">${sym(m.dir)}</span></span> `; });
+
+  const head='<th>#</th><th>ruch</th>'+Array.from({length:cfg.n},(_,i)=>`<th>${i+1}</th>`).join('');
+  let rows=`<tr><td>—</td><td style="color:var(--muted);font-style:italic">START</td>${start.map((v,i)=>cellHtml(v,false,v===target[i])).join('')}</tr>`;
+  let cur=start.slice();
+  path.forEach((m,idx)=>{
+    const before=cur.slice();
+    cur=applyMove(cur,m.latch,m.dir);
+    const cells=cur.map((v,i)=>cellHtml(v, v!==before[i], v===target[i])).join('');
+    rows+=`<tr><td>${idx+1}</td><td>bęb.<b> ${m.latch+1}</b> <span class="mvtag ${cls(m.dir)}">${sym(m.dir)}</span></td>${cells}</tr>`;
+  });
+
+  out.innerHTML=`
+    <div class="status ok">Skrzynia otwarta — najkrótsza droga: <b>${path.length}</b> ruchów &nbsp;·&nbsp; ${ms.toFixed(0)} ms · ${visited.toLocaleString('pl')} stanów</div>
+    <div class="panel">
+      <span class="corner tl"></span><span class="corner tr"></span><span class="corner bl"></span><span class="corner br"></span>
+      <h2><span class="rune">III</span> Kolejność obrotów</h2><div class="seq">${seq}</div>
+      <h2 style="margin-top:8px"><span class="rune">IV</span> Krok po kroku</h2>
+      <div style="overflow-x:auto"><table class="steps"><thead><tr>${head}</tr></thead><tbody>${rows}</tbody></table></div>
+    </div>`;
+  out.scrollIntoView({behavior:'smooth',block:'start'});
+}
+function cellHtml(v,changed,onTarget){
+  let c='cell';
+  if(changed) c+=' changed'; else if(onTarget) c+=' target';
+  return `<td><span class="${c}">${v}</span></td>`;
+}
+
+renderLatches();
+renderCouplings();
+</script>
+</body>
+</html>
